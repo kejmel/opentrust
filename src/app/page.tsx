@@ -1,13 +1,16 @@
 import Image from "next/image";
-import { SignedIn, UserButton } from "@clerk/nextjs";
-import { SignInButton } from "@clerk/nextjs";
-import { SignUpButton } from "@clerk/nextjs";
-import { currentUser } from "@clerk/nextjs";
+import { SignedIn, SignInButton, SignUpButton, currentUser, SignedOut, clerkClient} from "@clerk/nextjs";
 import Link from 'next/link'
-import { SignedOut } from "@clerk/nextjs";
+
 
 export default async function Home() {
-  const user = await currentUser();
+  const user = await currentUser?.();
+
+  // await clerkClient.users.updateUserMetadata(user?.id, {
+  //   publicMetadata: {
+  //     role : "company"
+  //   }
+  // })
 
   return (
     <div className="flex justify-center items-center h-screen gap-1">
@@ -20,6 +23,7 @@ export default async function Home() {
         </SignUpButton>
       </SignedOut>
       <SignedIn>
+        {/* <p className="text-white">Hi {JSON.stringify(user?.publicMetadata, null, 2)}</p> */}
       <Link className="dashboard-button" href="/dashboard">Dashboard</Link>
       </SignedIn>
     </div>
