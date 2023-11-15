@@ -3,13 +3,15 @@ import { NextResponse } from "next/server";
 import { clerkClient } from "@clerk/nextjs";
 
 export default authMiddleware({
-  async afterAuth(auth, req, evt) {
+    async afterAuth(auth, req, evt) {
 
-    console.log('tho');
-    if (auth.userId == null) {
+    if (!auth.userId && !auth.isPublicRoute) {
+      return redirectToSignIn({ returnBackUrl: req.url });
+    }
+    if(auth.userId == null) {
       return NextResponse.next();
     }
-
+    
     const user = await clerkClient.users.getUser(auth.userId);
     
     if (
@@ -19,10 +21,8 @@ export default authMiddleware({
     ) {
       return NextResponse.redirect(new URL("/set-role", req.url));
     }
-
-    console.log('after auth');
   },
-  publicRoutes: ["/"]
+  publicRoutes: ['/']
 });
 
 export const config = {
